@@ -28,8 +28,16 @@ This will let you do conditional resize of the output.
 
 ### Examples
 
+#### Upscale
+
 ![upscale](example_upscale.png)
 
+
+#### Downscale
+
 ![downscale](example_downscale.png)
+
+
+#### Workflow
 
 [Workflow](example_workflow.json)
