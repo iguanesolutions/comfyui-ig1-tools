@@ -26,6 +26,10 @@ In order to use it properly you will need some extra nodes from [ComfyUI Essenti
 
 This will let you do conditional resize of the output.
 
-### Example
+### Examples
 
-![example](example.png)
+![upscale](example_upscale.png)
+
+![downscale](example_downscale.png)
+
+[Workflow](example_workflow.json)
