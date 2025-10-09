@@ -50,11 +50,11 @@ class FluxResolution(io.ComfyNode):
                 ),
                 io.Boolean.Output(
                     "hires_upscale",
-                    tool_tip=f"Indicate if a second pass, {HIRES_RATIO}x HiRes upscale is needed. True if the generate resolution is lower than the reference resolution."
+                    tooltip=f"Indicate if a second pass, {HIRES_RATIO}x HiRes upscale is needed. True if the generate resolution is lower than the reference resolution."
                 ),
                 io.Boolean.Output(
                     "additional_upscale",
-                    tool_tip="Indicate if a third pass, regular upscale is needed. True if the HiRes second phase resolution is lower than the reference resolution."
+                    tooltip="Indicate if a third pass, regular upscale is needed. True if the HiRes second phase resolution is lower than the reference resolution."
                 )
             ],
         )
