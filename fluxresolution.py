@@ -22,11 +22,13 @@ class FluxResolution(io.ComfyNode):
             inputs=[
                 io.Int.Input(
                     "desired_width",
+                    default=3840,
                     min=32,
                     display_mode=io.NumberDisplay.number,
                 ),
                 io.Int.Input(
                     "desired_height",
+                    default=2160,
                     min=32,
                     display_mode=io.NumberDisplay.number,
                 )
