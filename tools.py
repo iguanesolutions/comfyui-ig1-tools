@@ -109,17 +109,25 @@ class ResolutionsList:
 
     def get_closest_equal_or_larger(self, target: Resolution) -> Resolution:
         if not self.resolutions:
-            return Resolution(0, 0)
+            return None
 
-        candidates = [
-            res for res in self.resolutions if res.can_contains(target)]
-        if not candidates:
-            return Resolution(0, 0)
+        closest_equal_or_larger = self.resolutions[0]
+        closest_distance = euclidean_distance(
+            [float(closest_equal_or_larger.width),
+             float(closest_equal_or_larger.height)],
+            [float(target.width), float(target.height)]
+        )
 
-        return min(candidates, key=lambda r: euclidean_distance(
-            [r.width, r.height],
-            [target.width, target.height]
-        ))
+        for resolution in self.resolutions:
+            distance = euclidean_distance(
+                [float(resolution.width), float(resolution.height)],
+                [float(target.width), float(target.height)]
+            )
+            if distance < closest_distance or not closest_equal_or_larger.can_contains(target):
+                closest_equal_or_larger = resolution
+                closest_distance = distance
+
+        return closest_equal_or_larger
 
     def get_closest_by_ratio(self, target: Resolution) -> Resolution:
         if not self.resolutions:
@@ -219,18 +227,20 @@ def get_flux_closest_valid_resolution(res: Resolution) -> Tuple[Resolution, Reso
     # Is the resolution already valid?
     if res.flux_valid():
         return res, res
-
+    print("second")
     # Try to find a valid resolution with the same aspect ratio
     candidates = get_flux_resolutions_by_ratio(res.aspect_ratio())
     if candidates.resolutions:
+        for reso in candidates.resolutions:
+            print(reso)
         flux_valid = candidates.get_closest_equal_or_larger(res)
         return flux_valid, res
-
+    print("third")
     # Try with a slight adjustment of the resolution to fit step increments
     adjusted_reference = get_closest_valid_step_resolution(res)
     if adjusted_reference.flux_valid():
         return adjusted_reference, adjusted_reference
-
+    print("last")
     # As last resort, find the closest valid resolution by aspect ratio
     flux_valid = all_valid_resolutions.get_closest_by_ratio(
         adjusted_reference)
