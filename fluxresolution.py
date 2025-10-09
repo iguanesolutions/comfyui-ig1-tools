@@ -68,11 +68,11 @@ class FluxResolution(io.ComfyNode):
         )
 
     @classmethod
-    def execute(cls, width, height) -> io.NodeOutput:
+    def execute(cls, desired_width, desired_height) -> io.NodeOutput:
         # Compute the flux first pass generation resolution
         # and the adjusted (if necessary) reference resolution.
         flux_reso, adjusted_ref_reso = get_flux_closest_valid_resolution(
-            Resolution(width, height)
+            Resolution(desired_width, desired_height)
         )
         # Compute if a HiRes fix x2 second pass is needed to get to the reference resolution
         need_hires = False
