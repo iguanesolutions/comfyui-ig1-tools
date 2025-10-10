@@ -1,7 +1,7 @@
 [project]
 name = "flux-tools"
 description = "Flux generation tools. Allow easy computation of Flux generation resolutions and upscale needs to automate workflows. Also allow to report generation usage to BFL if licensed."
-version = "1.0.0"
+version = "2.0.0"
 license-files = ["LICENSE"]
 dependencies = ["requests"]
 
