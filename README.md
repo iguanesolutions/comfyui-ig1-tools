@@ -43,7 +43,7 @@ By using conditionnal nodes on your workflow you can acheive a fully automated w
 3. Perform if necessary a second HiRes pass
 4. Perform if necessary an additionnal upscale pass
 5. Downscale the image if needed
-6. Output the final image to the reference resolution (or even the user input size if it is okay for you to take the risk to crop/fill the image).
+6. Output the final image to the reference resolution (or even the user input size if it is okay for you to take the risk to stretch the image a little bit).
 
 Check the example below !
 
