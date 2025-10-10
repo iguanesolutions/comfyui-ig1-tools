@@ -1,43 +1,60 @@
 # ComfyUI Flux Tools
 
-This repository contains ComfyUI nodes that help in determining the closest compatible flux resolution for a given input resolution.
+This repository contains ComfyUI nodes to assist Flux generation workflow in ComfyUI.
 
 ## Installation
 
 ### Manual
 
 1. Either clone this repository or download the ZIP and extract it into your `custom_nodes` directory of ComfyUI.
-
 2. Restart ComfyUI to load the new node.
 
 ### ComfyUI Manager
 
 1. Open ComfyUI Manager.
 2. Click on "Install via Git URL".
-3. Enter the following URL: `https://github.com/iguanesolutions/comfyui-flux-resolution.git`.
+3. Enter the following URL: `https://github.com/iguanesolutions/comfyui-flux-tools.git`.
 
 ## Usage
 
-Once installed, you will find a new node called "Flux Resolution" under the "flux tools" category.
+Once installed, you will find the following nodes under the `Flux Tools` category:
 
-It is designed to take an input resolution and output the closest compatible flux resolution and a boolean that tells if the final image needs to be upscaled or not.
+* `Flux Resolution`
+* `Flux Licensing Usage Report`
 
-In order to use it properly you will need some extra nodes from [ComfyUI Essentials](https://github.com/cubiq/ComfyUI_essentials) and [Crystools](https://github.com/crystian/ComfyUI-Crystools) and an upscale model (like [RealESRGAN_x4plus](https://openmodeldb.info/models/4x-realesrgan-x4plus) or anything else that works for you).
+### Flux Resolution
 
-This will let you do conditional resize of the output.
+This node takes a desired resolution and computes the closest valid resolution for Flux generation, including whether a HiRes fix is needed and a final upscale is needed.
 
-### Examples
+Example:
+1. Input resolution is `3844x2160`. The resolution is not valid because:
+    1. It does not respect the flux stepping
+    2. It is over the max size
+2. The first computation will be to compute a resolution respecting the stepping (we use 16 instead of 32 more information below). The closest valid resolution will be computed: `3844x2160` -> `3840x2160`. This resolution will be the "reference" resolution, used for further computation and can (should) also be used as the final downscale target resolution to keep the generated image ratio.
+3. The second computation will be the generate resolution: based on the reference resolution, we will compute a new resolution that respect the minimum and maximum size for the Flux model. Use it for the first pass generation (from scratch/noise). In our example the generate resolution will be `1280x720`.
+4. Because the reference resolution `3840x2160` is bigger than the generate resolution, the `hires_upscale` boolean will be set to true: it indicates that a second pass is needed to upscale the image to the reference resolution. We recommended to not perform a simple upscale but a 2x HiRes fix on this step.
+5. Because the HiRes fix will upscale (and add details to) the image to `2560x1440` (x2) and this resolution is still under the reference resolution, the `additional_upscale` boolean will be set to true: it indicates that a third pass is needed to upscale the image to the reference resolution. We recommended to perform a simple upscale on this step.
+6. By upscaling the hires image by x2 again we will optain a final image of `5120x2880` that is bigger than the reference resolution, at this step a downscale will be needed to get the final image to the reference resolution of `3840x2160`.
 
-#### Upscale
+By using conditionnal nodes on your workflow you can acheive a fully automated workflow that:
 
-![upscale](example_upscale.png)
+1. Take any desired width and height as input
+2. Compute the optimal generate resolution for Flux
+3. Perform if necessary a second HiRes pass
+4. Perform if necessary an additionnal upscale pass
+5. Downscale the image if needed
+6. Output the final image to the reference resolution (or even the user input size if it is okay for you to take the risk to crop/fill the image).
 
+Check the example below !
 
-#### Downscale
+### Flux Licensing Usage Report
 
-![downscale](example_downscale.png)
+This nodes allows you to seamlessly report your generation to Black Forest Labs if you have a licensed Flux Dev model. It supports multi images batches too.
 
+Check the example below !
 
-#### Workflow
+## Example
 
-[Workflow](example_workflow.json)
+![workflow_screenshot](res/flux_hires_generate.png)
+
+You can [download](res/flux_hires.json) the example workflow to test an automatic Flux HiRes generation.
