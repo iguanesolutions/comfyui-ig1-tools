@@ -22,14 +22,14 @@ class FluxResolution(io.ComfyNode):
             inputs=[
                 io.Int.Input(
                     "desired_width",
-                    tool_tip="The ideal, desired width of the image to be generated. Will be adjusted to reference_width to match stepping if necessary.",
+                    tooltip="The ideal, desired width of the image to be generated. Will be adjusted to reference_width to match stepping if necessary.",
                     default=3840,
                     min=32,
                     display_mode=io.NumberDisplay.number,
                 ),
                 io.Int.Input(
                     "desired_height",
-                    tool_tip="The ideal, desired height of the image to be generated. Will be adjusted to reference_height to match stepping if necessary.",
+                    tooltip="The ideal, desired height of the image to be generated. Will be adjusted to reference_height to match stepping if necessary.",
                     default=2160,
                     min=32,
                     display_mode=io.NumberDisplay.number,
