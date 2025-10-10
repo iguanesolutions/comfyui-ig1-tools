@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/devcontainers/python:1-3.12
-RUN git clone https://github.com/comfyanonymous/ComfyUI --single-branch
+WORKDIR /
+RUN git clone --single-branch --branch $(git ls-remote --tags --sort="v:refname" https://github.com/comfyanonymous/ComfyUI.git | tail -n1 | sed 's/.*\///; s/\^{}//') https://github.com/comfyanonymous/ComfyUI
 WORKDIR /ComfyUI
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
