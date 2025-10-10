@@ -47,21 +47,24 @@ class FluxReport(io.ComfyNode):
         try:
             response = requests.post(
                 f"https://api.bfl.ai/v1/licenses/models/{model}/usage",
-                headers={"x-key": api_key},
+                headers={
+                    "Content-Type": "application/json",
+                    "x-key": api_key,
+                },
+                json={
+                    "number_of_generations": len(image)
+                },
             )
             response.raise_for_status()
             print(
                 f"Successfully reported {len(image)} image(s) to Black Forest Labs for {model}")
         except requests.exceptions.RequestException as e:
             raise Exception(
-                f"Failed to report images to Black Forest Labs: {e}")
+                f"Failed to report {len(image)} image(s) generation to Black Forest Labs for {model}: {e}")
         return io.NodeOutput(image)
 
     @classmethod
-    def validate_inputs(cls, model, api_key) -> bool | str:
-        print(f"validation method called: {model}, '{api_key}'")
-        if model not in models:
-            return f"Invalid model '{model}', valid models are {models}"
+    def validate_inputs(cls, api_key) -> bool | str:
         if api_key == "":
             return "The API key can not be empty"
         return True
