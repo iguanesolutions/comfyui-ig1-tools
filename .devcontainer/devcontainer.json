@@ -3,6 +3,6 @@
     "build": {
         "dockerfile": "Dockerfile"
     },
-    "workspaceMount": "source=${localWorkspaceFolder},target=/ComfyUI/custom_nodes/comfyui-flux-resolution,type=bind",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/ComfyUI/custom_nodes/comfyui-flux-tools,type=bind",
     "workspaceFolder": "/ComfyUI"
 }

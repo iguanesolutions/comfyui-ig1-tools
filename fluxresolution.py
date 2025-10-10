@@ -10,7 +10,7 @@ class FluxResolution(io.ComfyNode):
     @classmethod
     def define_schema(cls) -> io.Schema:
         return io.Schema(
-            node_id="FluxResolution",
+            node_id="IG1FluxResolution",
             display_name="Flux Resolution",
             category="Flux Tools",
             description=f"""From a user input desired resolution, this node will compute:
@@ -22,12 +22,14 @@ class FluxResolution(io.ComfyNode):
             inputs=[
                 io.Int.Input(
                     "desired_width",
+                    tool_tip="The ideal, desired width of the image to be generated. Will be adjusted to reference_width to match stepping if necessary.",
                     default=3840,
                     min=32,
                     display_mode=io.NumberDisplay.number,
                 ),
                 io.Int.Input(
                     "desired_height",
+                    tool_tip="The ideal, desired height of the image to be generated. Will be adjusted to reference_height to match stepping if necessary.",
                     default=2160,
                     min=32,
                     display_mode=io.NumberDisplay.number,
