@@ -2,6 +2,7 @@ from typing_extensions import override
 from comfy_api.latest import ComfyExtension, io
 
 from .fluxresolution import FluxResolution
+from .fluxreport import FluxReport
 
 
 class FluxToolsExtension(ComfyExtension):
@@ -9,7 +10,9 @@ class FluxToolsExtension(ComfyExtension):
     async def get_node_list(self) -> list[type[io.ComfyNode]]:
         return [
             FluxResolution,
+            FluxReport,
         ]
+
 
 async def comfy_entrypoint() -> FluxToolsExtension:
     return FluxToolsExtension()
