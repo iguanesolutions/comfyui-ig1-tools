@@ -47,6 +47,10 @@ By using conditionnal nodes on your workflow you can acheive a fully automated w
 
 Check the example below !
 
+> [!NOTE]
+> Original stepping for Flux Dev is 32 (as indicated by the [API parameters](https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-[dev]#body-width)). But we use a 16 stepping to allow more flexibility on the final image size.
+> For example for a 16/9 ratio, with a 32 stepping and a 1440 max size, the biggest generate resolution would be 1024x576. With a 16 stepping, the biggest generate resolution can be 1280x720. During our tests, we noticed that the 16 stepping did not introduced any artifacts on the final image while providing more granularity for the generate resolution yielding better results thanks to bigger generate resolutions.
+
 ### Flux Licensing Usage Report
 
 This nodes allows you to seamlessly report your generation to Black Forest Labs if you have a licensed Flux Dev model. It supports multi images batches too.
