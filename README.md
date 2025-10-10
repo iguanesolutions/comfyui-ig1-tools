@@ -1,4 +1,4 @@
-# ComfyUI Flux Resolution
+# ComfyUI Flux Tools
 
 This repository contains ComfyUI nodes that help in determining the closest compatible flux resolution for a given input resolution.
 

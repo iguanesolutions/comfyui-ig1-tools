@@ -12,7 +12,7 @@ class FluxResolution(io.ComfyNode):
         return io.Schema(
             node_id="FluxResolution",
             display_name="Flux Resolution",
-            category="Flux tools",
+            category="Flux Tools",
             description=f"""From a user input desired resolution, this node will compute:
 1. A (adjusted if necessary) reference resolution the closest possible from the input resolution but respecting the flux stepping (should be 32 but we found 16 works well and offers is more flexible for first pass resolutions).
 2. A first generation pass, flux compatible, resolution for the first sampling based on the reference resolution but also respecting minimal and maximal resolution.

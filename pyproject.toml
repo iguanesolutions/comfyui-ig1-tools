@@ -1,13 +1,13 @@
 [project]
-name = "flux-resolution"
-description = "Get the closest compatible flux resolution from a given resolution."
+name = "flux-tools"
+description = "Flux generation tools."
 version = "1.0.0"
 license = { file = "LICENSE" }
 
 [project.urls]
-Repository = "https://github.com/iguanesolutions/comfyui-flux-resolution"
+Repository = "https://github.com/iguanesolutions/comfyui-flux-tools"
 
 [tool.comfy]
 PublisherId = "iguanesolutions"
-DisplayName = "Flux Resolution"
+DisplayName = "Flux Tools"
 Icon = ""
