@@ -1,30 +1,30 @@
 from typing import Tuple
 
-from .tools import AspectRatio, Resolution, ResolutionsList, get_closest_valid_patch_resolution
+from .helpers import AspectRatio, Resolution, ResolutionsList, get_closest_valid_patch_resolution
 
 # Constants
-PATCH_SIZE = 16    # Should be 32 but it's too limiting; 16 allows for more resolutions and seems to work fine with Flux anyway
+PATCH_LEN = 16    # Should be 32 but it's too limiting; 16 allows for more resolutions and seems to work fine with Flux anyway
 MIN_LEN = 320
-MAX_SIZE = 1440
+MAX_SIZE = 1024 * 1024  # max training size
 
 
 def compute_all_flux_valid_resolutions() -> ResolutionsList:
     valid_resolutions = []
 
     # Start with one less than the minimum to generate the first candidate below min_size
-    width_multiplier = (MIN_LEN // PATCH_SIZE) - 1
+    width_multiplier = (MIN_LEN // PATCH_LEN) - 1
     while True:
         width_multiplier += 1
-        width = PATCH_SIZE * width_multiplier
-        if width > MAX_SIZE:
+        width = PATCH_LEN * width_multiplier
+        if width * MIN_LEN > MAX_SIZE:
             break
 
         # For each width, iterate through height multipliers
-        height_multiplier = (MIN_LEN // PATCH_SIZE) - 1
+        height_multiplier = (MIN_LEN // PATCH_LEN) - 1
         while True:
             height_multiplier += 1
-            height = PATCH_SIZE * height_multiplier
-            if height > MAX_SIZE:
+            height = PATCH_LEN * height_multiplier
+            if width * height > MAX_SIZE:
                 break
             valid_resolutions.append(Resolution(width, height))
 
@@ -48,7 +48,7 @@ def get_flux_closest_valid_resolution(res: Resolution) -> Tuple[Resolution, Reso
     Returns the closest FLUX-compatible resolution and the adjusted reference.
     """
     # Is the resolution already valid?
-    if res.valid(patch=PATCH_SIZE, min_size=MIN_LEN, max_size=MAX_SIZE):
+    if res.valid(patch=PATCH_LEN, min_len=MIN_LEN, max_size=MAX_SIZE):
         return res, res
     # Try to find a valid resolution with the same aspect ratio
     candidates = get_flux_resolutions_by_ratio(res.aspect_ratio())
@@ -56,7 +56,7 @@ def get_flux_closest_valid_resolution(res: Resolution) -> Tuple[Resolution, Reso
         flux_valid = candidates.get_closest_equal_or_larger(res)
         return flux_valid, res
     # Try with a slight adjustment of the resolution to fit step increments
-    adjusted_reference = get_closest_valid_patch_resolution(res, PATCH_SIZE)
+    adjusted_reference = get_closest_valid_patch_resolution(res, PATCH_LEN)
     if adjusted_reference.flux_valid():
         return adjusted_reference, adjusted_reference
     # As last resort, find the closest valid resolution by aspect ratio

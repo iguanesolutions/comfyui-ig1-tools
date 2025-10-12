@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,disable=missing-class-docstring,missing-function-docstring,line-too-long
 from comfy_api.latest import io
 
-from .tools import Resolution
+from .helpers import Resolution
 from .flux import get_flux_closest_valid_resolution
 
 HIRES_RATIO = 2

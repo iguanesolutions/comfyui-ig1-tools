@@ -47,9 +47,10 @@ class Resolution:
     def aspect_ratio(self) -> AspectRatio:
         return AspectRatio(self.width, self.height).simplify()
 
-    def valid(self, patch: int, min: int, max: int) -> bool:
-        return (self.width >= min and self.width % patch == 0 and self.width <= max and
-                self.height >= min and self.height % patch == 0 and self.height <= max)
+    def valid(self, patch_len: int, min_len: int, max_size: int) -> bool:
+        return (self.width >= min_len and self.width % patch_len == 0 and
+                self.height >= min_len and self.height % patch_len == 0 and
+                self.width * self.height <= max_size)
 
     def can_contains(self, target: "Resolution") -> bool:
         return self.width >= target.width and self.height >= target.height
@@ -155,26 +156,26 @@ class ResolutionsList:
         return ResolutionsList(closest_candidates).get_closest(target)
 
 
-def get_closest_valid_patch_resolution(res: Resolution, patch: int) -> Resolution:
-    if res.width % patch == 0 and res.height % patch == 0:
+def get_closest_valid_patch_resolution(res: Resolution, patch_len: int) -> Resolution:
+    if res.width % patch_len == 0 and res.height % patch_len == 0:
         return res
 
-    truncated_width_ratio = res.width // patch
-    truncated_height_ratio = res.height // patch
+    truncated_width_ratio = res.width // patch_len
+    truncated_height_ratio = res.height // patch_len
 
     candidates = [
         # SW
-        Resolution(truncated_width_ratio * patch,
-                   truncated_height_ratio * patch),
+        Resolution(truncated_width_ratio * patch_len,
+                   truncated_height_ratio * patch_len),
         # NW
-        Resolution(truncated_width_ratio * patch,
-                   (truncated_height_ratio + 1) * patch),
+        Resolution(truncated_width_ratio * patch_len,
+                   (truncated_height_ratio + 1) * patch_len),
         # SE
-        Resolution((truncated_width_ratio + 1) * patch,
-                   truncated_height_ratio * patch),
+        Resolution((truncated_width_ratio + 1) * patch_len,
+                   truncated_height_ratio * patch_len),
         # NE
-        Resolution((truncated_width_ratio + 1) * patch,
-                   (truncated_height_ratio + 1) * patch)
+        Resolution((truncated_width_ratio + 1) * patch_len,
+                   (truncated_height_ratio + 1) * patch_len)
     ]
 
     return ResolutionsList(candidates).get_closest(res)
