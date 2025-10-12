@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from .helpers import AspectRatio, Resolution, ResolutionsList, get_closest_valid_patch_resolution
+from .helpers import AspectRatio, Resolution, ResolutionsList
 
 # Constants
 PATCH_LEN = 16    # Should be 32 but it's too limiting; 16 allows for more resolutions and seems to work fine with Flux anyway
@@ -56,7 +56,7 @@ def get_flux_closest_valid_resolution(res: Resolution) -> Tuple[Resolution, Reso
         flux_valid = candidates.get_closest_equal_or_larger(res)
         return flux_valid, res
     # Try with a slight adjustment of the resolution to fit step increments
-    adjusted_reference = get_closest_valid_patch_resolution(res, PATCH_LEN)
+    adjusted_reference = res.get_closest_valid_patch_resolution(PATCH_LEN)
     if adjusted_reference.flux_valid():
         return adjusted_reference, adjusted_reference
     # As last resort, find the closest valid resolution by aspect ratio

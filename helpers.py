@@ -2,6 +2,8 @@
 import math
 from typing import List
 
+HIRES_RATIO = 2
+
 
 def euclidean_distance(a: List[float], b: List[float]) -> float:
     return math.sqrt(sum((x - y) ** 2 for x, y in zip(a, b)))
@@ -27,10 +29,10 @@ class AspectRatio:
             return self
         return AspectRatio(self.numerator // divisor, self.denominator // divisor)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.numerator}:{self.denominator}"
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if not isinstance(other, AspectRatio):
             return False
         simplified_self = self.simplify()
@@ -58,11 +60,32 @@ class Resolution:
     def total_pixels(self) -> int:
         return self.width * self.height
 
-    def valid(self) -> bool:
-        return self.width > 0 and self.height > 0
+    def get_closest_valid_patch_resolution(self, patch_len: int) -> "Resolution":
+        if self.width % patch_len == 0 and self.height % patch_len == 0:
+            return self
 
-    def __str__(self):
-        return f"{self.width}×{self.height}"
+        truncated_width_ratio = self.width // patch_len
+        truncated_height_ratio = self.height // patch_len
+
+        candidates = [
+            # SW
+            Resolution(truncated_width_ratio * patch_len,
+                       truncated_height_ratio * patch_len),
+            # NW
+            Resolution(truncated_width_ratio * patch_len,
+                       (truncated_height_ratio + 1) * patch_len),
+            # SE
+            Resolution((truncated_width_ratio + 1) * patch_len,
+                       truncated_height_ratio * patch_len),
+            # NE
+            Resolution((truncated_width_ratio + 1) * patch_len,
+                       (truncated_height_ratio + 1) * patch_len)
+        ]
+
+        return ResolutionsList(candidates).get_closest(self)
+
+    def __str__(self) -> str:
+        return f"{self.width}×{self.height} ({self.aspect_ratio})"
 
 
 class ResolutionsList:
@@ -154,28 +177,3 @@ class ResolutionsList:
 
         # Return the resolution closest in size from the closest ratios
         return ResolutionsList(closest_candidates).get_closest(target)
-
-
-def get_closest_valid_patch_resolution(res: Resolution, patch_len: int) -> Resolution:
-    if res.width % patch_len == 0 and res.height % patch_len == 0:
-        return res
-
-    truncated_width_ratio = res.width // patch_len
-    truncated_height_ratio = res.height // patch_len
-
-    candidates = [
-        # SW
-        Resolution(truncated_width_ratio * patch_len,
-                   truncated_height_ratio * patch_len),
-        # NW
-        Resolution(truncated_width_ratio * patch_len,
-                   (truncated_height_ratio + 1) * patch_len),
-        # SE
-        Resolution((truncated_width_ratio + 1) * patch_len,
-                   truncated_height_ratio * patch_len),
-        # NE
-        Resolution((truncated_width_ratio + 1) * patch_len,
-                   (truncated_height_ratio + 1) * patch_len)
-    ]
-
-    return ResolutionsList(candidates).get_closest(res)
