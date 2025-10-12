@@ -13,7 +13,7 @@ class FluxResolution(io.ComfyNode):
             display_name="Flux Resolution",
             category="Flux Tools",
             description=f"""From a user input desired resolution, this node will compute:
-1. A (adjusted if necessary) reference resolution the closest possible from the input resolution but respecting the flux stepping (should be 32 but we found 16 works well and offers is more flexible for first pass resolutions).
+1. A (adjusted if necessary) reference resolution the closest possible from the input resolution but respecting the flux patch length (should be 32 but we found 16 works well and offers is more flexible for first pass resolutions).
 2. A first generation pass, flux compatible, resolution for the first sampling based on the reference resolution but also respecting minimal and maximal resolution.
 3. A boolean indicating if a second pass {HIRES_RATIO}x upscale (HiRes fix recommended) is necessary, aka if the generate resolution is lower than the reference resolution.
 4. A boolean indicating if a third pass (pure upscale) is necessary, aka if the the size post 2nd pass (doubling the resolution) is still under the reference resolution.
@@ -21,14 +21,14 @@ class FluxResolution(io.ComfyNode):
             inputs=[
                 io.Int.Input(
                     "desired_width",
-                    tooltip="The ideal, desired width of the image to be generated. Will be adjusted to reference_width to match stepping if necessary.",
+                    tooltip="The ideal, desired width of the image to be generated. Will be adjusted to reference_width to match patch length if necessary.",
                     default=3840,
                     min=32,
                     display_mode=io.NumberDisplay.number,
                 ),
                 io.Int.Input(
                     "desired_height",
-                    tooltip="The ideal, desired height of the image to be generated. Will be adjusted to reference_height to match stepping if necessary.",
+                    tooltip="The ideal, desired height of the image to be generated. Will be adjusted to reference_height to match patch length if necessary.",
                     default=2160,
                     min=32,
                     display_mode=io.NumberDisplay.number,
@@ -38,12 +38,12 @@ class FluxResolution(io.ComfyNode):
                 io.Int.Output(
                     "reference_width",
                     display_name="REF_WIDTH",
-                    tooltip="The adjusted (stepping) reference width. The Flux generate width will be based on it. Use it for final downscale if any post generation upscale phases are needed."
+                    tooltip="The adjusted (patch length) reference width. The Flux generate width will be based on it. Use it for final downscale if any post generation upscale phases are needed."
                 ),
                 io.Int.Output(
                     "reference_height",
                     display_name="REF_HEIGHT",
-                    tooltip="The adjusted (stepping) reference height. The Flux generate height will be based on it. Use it for final downscale if any post generation upscale phases are needed."
+                    tooltip="The adjusted (patch length) reference height. The Flux generate height will be based on it. Use it for final downscale if any post generation upscale phases are needed."
                 ),
                 io.Int.Output(
                     "generate_width",
