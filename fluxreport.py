@@ -11,7 +11,7 @@ class FluxReport(io.ComfyNode):
         return io.Schema(
             node_id="IG1FluxReport",
             display_name="Flux Licensing Usage Report",
-            category="Flux Tools",
+            category="IG1 Tools",
             description=f"A simple passthru node that report the number of generated image(s) to Black Forest Labs. Usefull only when you are generating images for commercial use. See https://bfl.ai/licensing and https://docs.bfl.ai/api-reference/models/report-model-usage",
             inputs=[
                 io.Image.Input(

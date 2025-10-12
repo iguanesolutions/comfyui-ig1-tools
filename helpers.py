@@ -42,6 +42,7 @@ class AspectRatio:
 
 
 class Resolution:
+
     def __init__(self, width: int, height: int):
         self.width = width
         self.height = height
@@ -85,7 +86,7 @@ class Resolution:
         return ResolutionsList(candidates).get_closest(self)
 
     def __str__(self) -> str:
-        return f"{self.width}×{self.height} ({self.aspect_ratio})"
+        return f"{self.width}×{self.height} ({self.aspect_ratio()})"
 
 
 class ResolutionsList:
