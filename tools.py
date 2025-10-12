@@ -63,9 +63,6 @@ class Resolution:
     def __str__(self):
         return f"{self.width}×{self.height}"
 
-    def go_string(self) -> str:
-        return f"{self.__str__()} ({self.total_pixels()} pixels with {self.aspect_ratio().__str__()} ratio)"
-
 
 class ResolutionsList:
     def __init__(self, resolutions: List[Resolution] = []):
@@ -166,14 +163,18 @@ def get_closest_valid_patch_resolution(res: Resolution, patch: int) -> Resolutio
     truncated_height_ratio = res.height // patch
 
     candidates = [
+        # SW
         Resolution(truncated_width_ratio * patch,
-                   truncated_height_ratio * patch),  # SW
+                   truncated_height_ratio * patch),
+        # NW
         Resolution(truncated_width_ratio * patch,
-                   (truncated_height_ratio + 1) * patch),  # NW
+                   (truncated_height_ratio + 1) * patch),
+        # SE
         Resolution((truncated_width_ratio + 1) * patch,
-                   truncated_height_ratio * patch),  # SE
+                   truncated_height_ratio * patch),
+        # NE
         Resolution((truncated_width_ratio + 1) * patch,
-                   (truncated_height_ratio + 1) * patch)  # NE
+                   (truncated_height_ratio + 1) * patch)
     ]
 
     return ResolutionsList(candidates).get_closest(res)
