@@ -22,15 +22,17 @@ class FluxResolution(io.ComfyNode):
                 io.Int.Input(
                     "desired_width",
                     tooltip="The ideal, desired width of the image to be generated. Will be adjusted to reference_width to match patch length if necessary.",
-                    default=3840,
                     min=32,
+                    default=3840,  # 4k
+                    max=7680,  # 8k
                     display_mode=io.NumberDisplay.number,
                 ),
                 io.Int.Input(
                     "desired_height",
                     tooltip="The ideal, desired height of the image to be generated. Will be adjusted to reference_height to match patch length if necessary.",
-                    default=2160,
                     min=32,
+                    default=2160,  # 4k
+                    max=4320,  # 8k
                     display_mode=io.NumberDisplay.number,
                 )
             ],
@@ -57,7 +59,7 @@ class FluxResolution(io.ComfyNode):
                 ),
                 io.Boolean.Output(
                     "hires_upscale",
-                    display_name="HIRES UPSCALE",
+                    display_name="HIRES_UPSCALE",
                     tooltip=f"Indicate if a second pass, {HIRES_RATIO}x HiRes upscale is needed. True if the generate resolution is lower than the reference resolution."
                 ),
                 io.Boolean.Output(
