@@ -72,17 +72,17 @@ class FluxResolution(io.ComfyNode):
     def execute(cls, desired_width, desired_height) -> io.NodeOutput:
         # Compute the flux first pass generation resolution
         # and the adjusted (if necessary) reference resolution.
-        flux_reso, adjusted_ref_reso = get_flux_closest_valid_resolution(
+        adjusted_ref_reso, generate_reso = get_flux_closest_valid_resolution(
             Resolution(desired_width, desired_height)
         )
         # Compute if a HiRes fix x2 second pass is needed to get to the reference resolution
         need_hires = False
         need_upscale = False
-        if flux_reso.width < adjusted_ref_reso.width or flux_reso.height < adjusted_ref_reso.height:
+        if generate_reso.width < adjusted_ref_reso.width or generate_reso.height < adjusted_ref_reso.height:
             need_hires = True
             hires = Resolution(
-                width=flux_reso.width * HIRES_RATIO,
-                height=flux_reso.height * HIRES_RATIO
+                width=generate_reso.width * HIRES_RATIO,
+                height=generate_reso.height * HIRES_RATIO
             )
             # And if a 3rd pass pure upscale is necessary post hires fix
             if hires.width < adjusted_ref_reso.width or hires.height < adjusted_ref_reso.height:
@@ -90,7 +90,7 @@ class FluxResolution(io.ComfyNode):
         # Return to the user everything he needs for next steps
         return io.NodeOutput(
             adjusted_ref_reso.width, adjusted_ref_reso.height,
-            flux_reso.width, flux_reso.height,
+            generate_reso.width, generate_reso.height,
             need_hires,
             need_upscale,
         )
