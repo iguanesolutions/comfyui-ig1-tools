@@ -3,7 +3,7 @@ from comfy_api.latest import ComfyExtension, io
 
 from .fluxresolution import FluxResolution
 from .fluxreport import FluxReport
-from .resolution import ResolutionPacker, ResolutionProperties
+from .resolution import ResolutionPacker, ResolutionProperties, AspectRatioProperties
 
 
 class FluxToolsExtension(ComfyExtension):
@@ -12,6 +12,7 @@ class FluxToolsExtension(ComfyExtension):
         return [
             ResolutionPacker,
             ResolutionProperties,
+            AspectRatioProperties,
             FluxResolution,
             FluxReport,
         ]
