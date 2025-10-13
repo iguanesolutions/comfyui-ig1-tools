@@ -29,7 +29,7 @@ class FluxResolution(io.ComfyNode):
                 ResolutionParam.Output(
                     "reference",
                     display_name="REFERENCE",
-                    tooltip="The adjusted (patch length) reference resolution. The Flux generate resolution will be based on it. Use it for final downscale if any post generation upscale phases are needed."
+                    tooltip="The adjusted (patch length) reference resolution. The Flux generate resolution will be based on it. Use it for final downscale."
                 ),
                 ResolutionParam.Output(
                     "generate",
@@ -39,19 +39,19 @@ class FluxResolution(io.ComfyNode):
                 ),
                 io.Boolean.Output(
                     "hires",
-                    display_name="HIRES",
+                    display_name="NEED_HIRES",
                     tooltip=f"Indicate if a second pass, {HIRES_RATIO}x HiRes upscale is needed. True if the generate resolution is lower than the reference resolution."
                 ),
                 io.Boolean.Output(
                     "upscale",
-                    display_name="UPSCALE",
+                    display_name="NEED_UPSCALE",
                     tooltip="Indicate if a third pass, regular upscale is needed. True if the HiRes second phase resolution is lower than the reference resolution."
                 )
             ],
         )
 
     @classmethod
-    def execute(cls, resolution, ) -> io.NodeOutput:
+    def execute(cls, resolution) -> io.NodeOutput:
         # Compute the flux first pass generation resolution
         # and the adjusted (if necessary) reference resolution.
         adjusted_ref_reso, generate_reso = get_flux_closest_valid_resolution(
