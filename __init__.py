@@ -1,7 +1,7 @@
 from typing_extensions import override
 from comfy_api.latest import ComfyExtension, io
 
-from .node_utilities import ResolutionPacker, ResolutionProperties, AspectRatioProperties
+from .node_utilities import ResolutionPacker, ResolutionProperties, AspectRatioProperties, ImageSelector
 from .node_advisor import ResolutionAdvisor
 from .node_qwen import QwenImageNativesResolutions
 from .node_fluxreport import FluxReport
@@ -14,6 +14,7 @@ class IG1ToolsExtension(ComfyExtension):
             ResolutionPacker,
             ResolutionProperties,
             AspectRatioProperties,
+            ImageSelector,
             ResolutionAdvisor,
             QwenImageNativesResolutions,
             FluxReport,

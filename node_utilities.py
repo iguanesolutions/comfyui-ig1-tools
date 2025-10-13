@@ -135,3 +135,54 @@ class AspectRatioProperties(io.ComfyNode):
         return io.NodeOutput(
             aspect_ratio.numerator, aspect_ratio.denominator, aspect_ratio.value(),
         )
+
+
+class ImageSelector(io.ComfyNode):
+    @classmethod
+    def define_schema(cls) -> io.Schema:
+        return io.Schema(
+            node_id="IG1ImageSelector",
+            display_name="Image Selector",
+            category="IG1 Tools",
+            description=f"""A lazy selector that will require only one image to be generated. Use it with the advisor to automate the activation of HiRes and final upscale within your workflow.""",
+            inputs=[
+                io.Image.Input(
+                    "original",
+                    tooltip="The original image",
+                    lazy=True,
+                ),
+                io.Image.Input(
+                    "upscaled",
+                    tooltip="The upscaled image",
+                    lazy=True,
+                ),
+                io.Boolean.Input(
+                    "use_upscaled",
+                    tooltip="Select the upscaled image",
+                    lazy=False,
+                    default=False,
+                    force_input=True,
+                )
+            ],
+            outputs=[
+                io.Image.Output(
+                    "image",
+                    display_name="IMAGE",
+                    tooltip="The selected image",
+                )
+            ],
+        )
+
+    @classmethod
+    def check_lazy_status(cls, original, upscaled, use_upscaled):
+        if use_upscaled and upscaled is None:
+            return ["upscaled"]
+        if not use_upscaled and original is None:
+            return ["original"]
+        return []
+
+    @classmethod
+    def execute(cls, original, upscaled, use_upscaled) -> io.NodeOutput:
+        if use_upscaled:
+            return io.NodeOutput(upscaled)
+        return io.NodeOutput(original)
