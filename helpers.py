@@ -146,6 +146,13 @@ class ResolutionsList:
 
         return closest_equal_or_larger
 
+    def get_all_with_ratio(self, ratio: AspectRatio) -> "ResolutionsList":
+        valid_resolutions = []
+        for res in self.resolutions:
+            if res.aspect_ratio() == ratio:
+                valid_resolutions.append(res)
+        return ResolutionsList(valid_resolutions)
+
     def get_closest_by_ratio(self, target: Resolution) -> Resolution:
         if not self.resolutions:
             return Resolution(0, 0)
@@ -178,3 +185,26 @@ class ResolutionsList:
 
         # Return the resolution closest in size from the closest ratios
         return ResolutionsList(closest_candidates).get_closest(target)
+
+
+def generate_all_valid_resolutions(patch_len: int, min_len: int, max_size: int) -> ResolutionsList:
+    valid_resolutions = []
+
+    # Start with one less than the minimum to generate the first candidate below min_size
+    width_multiplier = (min_len // patch_len) - 1
+    while True:
+        width_multiplier += 1
+        width = patch_len * width_multiplier
+        if width * min_len > max_size:
+            break
+
+        # For each width, iterate through height multipliers
+        height_multiplier = (min_len // patch_len) - 1
+        while True:
+            height_multiplier += 1
+            height = patch_len * height_multiplier
+            if width * height > max_size:
+                break
+            valid_resolutions.append(Resolution(width, height))
+
+    return ResolutionsList(valid_resolutions)

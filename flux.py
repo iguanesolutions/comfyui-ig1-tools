@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from .helpers import AspectRatio, Resolution, ResolutionsList
+from .helpers import Resolution, generate_all_valid_resolutions
 
 # Constants
 PATCH_LEN = 16    # Should be 32 but it's too limiting; 16 allows for more resolutions and seems to work fine with Flux anyway
@@ -8,39 +8,9 @@ MIN_LEN = 320
 MAX_SIZE = 1024 * 1024  # max training size
 
 
-def compute_all_valid_resolutions() -> ResolutionsList:
-    valid_resolutions = []
-
-    # Start with one less than the minimum to generate the first candidate below min_size
-    width_multiplier = (MIN_LEN // PATCH_LEN) - 1
-    while True:
-        width_multiplier += 1
-        width = PATCH_LEN * width_multiplier
-        if width * MIN_LEN > MAX_SIZE:
-            break
-
-        # For each width, iterate through height multipliers
-        height_multiplier = (MIN_LEN // PATCH_LEN) - 1
-        while True:
-            height_multiplier += 1
-            height = PATCH_LEN * height_multiplier
-            if width * height > MAX_SIZE:
-                break
-            valid_resolutions.append(Resolution(width, height))
-
-    return ResolutionsList(valid_resolutions)
-
-
 # Precompute all valid resolutions
-all_valid_resolutions = compute_all_valid_resolutions()
-
-
-def get_resolutions_by_ratio(ratio: AspectRatio) -> ResolutionsList:
-    valid_resolutions = []
-    for res in all_valid_resolutions.resolutions:
-        if res.aspect_ratio() == ratio:
-            valid_resolutions.append(res)
-    return ResolutionsList(valid_resolutions)
+all_valid_resolutions = generate_all_valid_resolutions(
+    PATCH_LEN, MIN_LEN, MAX_SIZE)
 
 
 def get_closest_valid_resolution(res: Resolution) -> Tuple[Resolution, Resolution]:
@@ -51,7 +21,7 @@ def get_closest_valid_resolution(res: Resolution) -> Tuple[Resolution, Resolutio
     if res.valid(patch_len=PATCH_LEN, min_len=MIN_LEN, max_size=MAX_SIZE):
         return res, res
     # Try to find a valid resolution with the same aspect ratio
-    candidates = get_resolutions_by_ratio(res.aspect_ratio())
+    candidates = all_valid_resolutions.get_all_with_ratio(res.aspect_ratio())
     if candidates.resolutions:
         return res, candidates.get_closest_equal_or_larger(res)
     # Try with a slight adjustment of the resolution to fit step increments
