@@ -61,29 +61,8 @@ class Resolution:
     def total_pixels(self) -> int:
         return self.width * self.height
 
-    def get_closest_valid_patch_resolution(self, patch_len: int) -> "Resolution":
-        if self.width % patch_len == 0 and self.height % patch_len == 0:
-            return self
-
-        truncated_width_ratio = self.width // patch_len
-        truncated_height_ratio = self.height // patch_len
-
-        candidates = [
-            # SW
-            Resolution(truncated_width_ratio * patch_len,
-                       truncated_height_ratio * patch_len),
-            # NW
-            Resolution(truncated_width_ratio * patch_len,
-                       (truncated_height_ratio + 1) * patch_len),
-            # SE
-            Resolution((truncated_width_ratio + 1) * patch_len,
-                       truncated_height_ratio * patch_len),
-            # NE
-            Resolution((truncated_width_ratio + 1) * patch_len,
-                       (truncated_height_ratio + 1) * patch_len)
-        ]
-
-        return ResolutionsList(candidates).get_closest(self)
+    def mega_pixels(self) -> float:
+        return round(self.total_pixels() / 1000000, 2)
 
     def __gt__(self, other: "Resolution"):
         if not isinstance(other, Resolution):
@@ -106,7 +85,7 @@ class Resolution:
         return self.width >= other.width and self.height >= other.height
 
     def __str__(self) -> str:
-        return f"{self.width}×{self.height} ({self.aspect_ratio()})"
+        return f"{self.width}×{self.height} ({self.aspect_ratio()} @ {self.mega_pixels()}MP)"
 
 
 def ratio_distance(ref: AspectRatio, candidate: AspectRatio) -> float:

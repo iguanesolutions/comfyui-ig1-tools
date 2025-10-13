@@ -76,6 +76,11 @@ class ResolutionProperties(io.ComfyNode):
                     display_name="HEIGHT",
                     tooltip="The resolution height",
                 ),
+                io.Float.Output(
+                    "megapixels",
+                    display_name="MEGAPIXELS",
+                    tooltip="The resolution size in megapixels",
+                ),
                 RatioParam.Output(
                     "ratio",
                     display_name="ASPECT_RATIO",
@@ -88,7 +93,7 @@ class ResolutionProperties(io.ComfyNode):
     def execute(cls, resolution: Resolution) -> io.NodeOutput:
         ratio = resolution.aspect_ratio()
         return io.NodeOutput(
-            resolution.width, resolution.height, ratio,
+            resolution.width, resolution.height, resolution.mega_pixels(), ratio,
         )
 
 
