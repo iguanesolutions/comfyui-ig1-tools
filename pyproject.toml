@@ -1,14 +1,14 @@
 [project]
-name = "flux-tools"
-description = "Flux generation tools. Allow easy computation of Flux generation resolutions and upscale needs to automate workflows. Also allow to report generation usage to BFL if licensed."
-version = "2.0.0"
+name = "ig1-tools"
+description = "Generation tools, mostly about resolutions, high resolutions generation and automation. Also allow to report generation usage to BFL if licensed."
+version = "3.0.0"
 license-files = ["LICENSE"]
 dependencies = ["requests"]
 
 [project.urls]
-Repository = "https://github.com/iguanesolutions/comfyui-flux-tools"
+Repository = "https://github.com/iguanesolutions/comfyui-ig1-tools"
 
 [tool.comfy]
 PublisherId = "iguanesolutions"
-DisplayName = "Flux Tools"
+DisplayName = "IG1 Tools"
 Icon = ""
