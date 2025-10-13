@@ -5,8 +5,9 @@ from .helpers import Resolution, HIRES_RATIO
 from .node_utilities import ResolutionParam
 from .flux import get_best_valid_resolution as get_flux_best_valid_resolution
 from .qwenimage import get_best_valid_resolution as get_qwenimage_best_valid_resolution
+from .sdxl import get_best_valid_resolution as get_sdxl_best_valid_resolution
 
-models = ["FLUX.1-dev", "Qwen-Image"]
+models = ["Qwen-Image", "FLUX.1-dev", "SDXL"]
 
 
 class ResolutionAdvisor(io.ComfyNode):
@@ -61,6 +62,8 @@ class ResolutionAdvisor(io.ComfyNode):
             generate_reso = get_flux_best_valid_resolution(resolution)
         elif model == "Qwen-Image":
             generate_reso = get_qwenimage_best_valid_resolution(resolution)
+        elif model == "SDXL":
+            generate_reso = get_sdxl_best_valid_resolution(resolution)
         else:
             ValueError(f"Model f{model} has no internal configuration.")
         # Compute if a HiRes fix x2 second pass is needed to get to the reference resolution

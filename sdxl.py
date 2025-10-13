@@ -1,10 +1,10 @@
 # pylint: disable=missing-module-docstring,disable=missing-class-docstring,missing-function-docstring,line-too-long
 from .helpers import Resolution, generate_all_valid_resolutions
 
-PATCH_LEN = 16  # VAE related
-MIN_LEN = 384
-# max training size, ~1,76MP pixels
-MAX_SIZE = 1328 * 1328
+PATCH_LEN = 8  # VAE related
+MIN_LEN = 512
+# max training size, ~1MP pixels
+MAX_SIZE = 1024 * 1024
 
 
 # Precompute all valid resolutions
