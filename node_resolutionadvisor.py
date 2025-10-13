@@ -3,7 +3,7 @@ from comfy_api.latest import io
 
 from .helpers import Resolution, HIRES_RATIO
 from .node_utilities import ResolutionParam
-from .flux import get_closest_valid_resolution as get_flux_closest_valid_resolution
+from .flux import get_best_valid_resolution as get_flux_best_valid_resolution
 
 models = ["FLUX.1-dev"]
 
@@ -35,11 +35,6 @@ class ResolutionAdvisor(io.ComfyNode):
             ],
             outputs=[
                 ResolutionParam.Output(
-                    "reference",
-                    display_name="REFERENCE",
-                    tooltip="The adjusted (with valid patch length) reference resolution. The generate resolution will be based on it. Use it for final downscale."
-                ),
-                ResolutionParam.Output(
                     "generate",
                     display_name="GENERATE",
                     tooltip="The first pass generation resolution respecting model's patch len, min lenghts and max size."
@@ -63,25 +58,23 @@ class ResolutionAdvisor(io.ComfyNode):
         # Compute the flux first pass generation resolution
         # and the adjusted (if necessary) reference resolution.
         if model == "FLUX.1-dev":
-            adjusted_ref_reso, generate_reso = get_flux_closest_valid_resolution(
-                resolution)
+            generate_reso = get_flux_best_valid_resolution(resolution)
         else:
             ValueError(f"Model f{model} has no internal configuration.")
         # Compute if a HiRes fix x2 second pass is needed to get to the reference resolution
         need_hires = False
         need_upscale = False
-        if generate_reso.width < adjusted_ref_reso.width or generate_reso.height < adjusted_ref_reso.height:
+        if generate_reso.width < resolution.width or generate_reso.height < resolution.height:
             need_hires = True
             hires = Resolution(
                 width=generate_reso.width * HIRES_RATIO,
                 height=generate_reso.height * HIRES_RATIO
             )
             # And if a 3rd pass pure upscale is necessary post hires fix
-            if hires.width < adjusted_ref_reso.width or hires.height < adjusted_ref_reso.height:
+            if hires.width < resolution.width or hires.height < resolution.height:
                 need_upscale = True
         # Return to the user everything he needs for next steps
         return io.NodeOutput(
-            adjusted_ref_reso,
             generate_reso,
             need_hires,
             need_upscale,

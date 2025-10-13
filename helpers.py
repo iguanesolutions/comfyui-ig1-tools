@@ -85,106 +85,108 @@ class Resolution:
 
         return ResolutionsList(candidates).get_closest(self)
 
+    def __gt__(self, other: "Resolution"):
+        if not isinstance(other, Resolution):
+            return NotImplemented
+        return self.width > other.width and self.height > other.height
+
+    def __ge__(self, other: "Resolution"):
+        if not isinstance(other, Resolution):
+            return NotImplemented
+        return self.width >= other.width and self.height >= other.height
+
+    def __gt__(self, other: "Resolution"):
+        if not isinstance(other, Resolution):
+            return NotImplemented
+        return self.width < other.width and self.height < other.height
+
+    def __ge__(self, other: "Resolution"):
+        if not isinstance(other, Resolution):
+            return NotImplemented
+        return self.width >= other.width and self.height >= other.height
+
     def __str__(self) -> str:
         return f"{self.width}×{self.height} ({self.aspect_ratio()})"
+
+
+def ratio_distance(ref: AspectRatio, candidate: AspectRatio) -> float:
+    return abs(ref.value() - candidate.value())
 
 
 class ResolutionsList:
     def __init__(self, resolutions: List[Resolution] = []):
         self.resolutions = resolutions
 
-    def biggest_resolution(self) -> Resolution:
-        if not self.resolutions:
-            return Resolution(0, 0)
-        return max(self.resolutions, key=lambda r: r.total_pixels())
-
-    def smallest_resolution(self) -> Resolution:
-        if not self.resolutions:
-            return Resolution(0, 0)
-        return min(self.resolutions, key=lambda r: r.total_pixels())
-
     def get_closest(self, target: Resolution) -> Resolution:
         if not self.resolutions:
             return Resolution(0, 0)
-
+        # First candidate
         closest = self.resolutions[0]
         closest_distance = euclidean_distance(
             [closest.width, closest.height],
             [target.width, target.height]
         )
-
+        # Iterate over the rest of the candidates to find the closest one
         for res in self.resolutions[1:]:
             distance = euclidean_distance(
                 [res.width, res.height],
                 [target.width, target.height]
             )
-            if distance < closest_distance:
+            if distance == closest_distance:
+                if res > closest:
+                    closest = res
+            elif distance < closest_distance:
                 closest = res
                 closest_distance = distance
-
         return closest
 
     def get_closest_equal_or_larger(self, target: Resolution) -> Resolution:
         if not self.resolutions:
-            return None
+            return Resolution(0, 0)
+        # Find all resolutions larger than or equal to the target
+        larger_or_equal_resolutions = ResolutionsList(
+            [res for res in self.resolutions if res >= target])
+        # We prefere a more distant but bigger or equal resolution than a closer but smaller one
+        if larger_or_equal_resolutions.resolutions:
+            return larger_or_equal_resolutions.get_closest(target)
+        # No bigger or equal resolutions in the list, taking all the resolutions into account
+        return self.get_closest(target)
 
-        closest_equal_or_larger = self.resolutions[0]
-        closest_distance = euclidean_distance(
-            [float(closest_equal_or_larger.width),
-             float(closest_equal_or_larger.height)],
-            [float(target.width), float(target.height)]
-        )
-
-        for resolution in self.resolutions:
-            distance = euclidean_distance(
-                [float(resolution.width), float(resolution.height)],
-                [float(target.width), float(target.height)]
-            )
-            if distance < closest_distance or not closest_equal_or_larger.can_contains(target):
-                closest_equal_or_larger = resolution
-                closest_distance = distance
-
-        return closest_equal_or_larger
-
-    def get_all_with_ratio(self, ratio: AspectRatio) -> "ResolutionsList":
-        valid_resolutions = []
-        for res in self.resolutions:
-            if res.aspect_ratio() == ratio:
-                valid_resolutions.append(res)
-        return ResolutionsList(valid_resolutions)
-
-    def get_closest_by_ratio(self, target: Resolution) -> Resolution:
+    def get_best_candidate(self, target: Resolution) -> Resolution:
         if not self.resolutions:
             return Resolution(0, 0)
-
-        reference_ratio = target.aspect_ratio()
-
-        # Sort by ratio distance to target ratio
-        ratio_sorted = sorted(self.resolutions, key=lambda r: euclidean_distance(
-            [r.aspect_ratio().numerator, r.aspect_ratio().denominator],
-            [reference_ratio.numerator, reference_ratio.denominator]
-        ))
-
-        # Find all candidates with the same ratio distance
+        # Sort all possibles resolutions given their ratio aspect distance from target's aspect ratio
+        # A candidates with the same ratio will have a distance of 0 and therefor will be at the beginning of the list
+        target_aspect_ratio = target.aspect_ratio()
+        ratio_sorted = sorted(self.resolutions, key=lambda res: ratio_distance(
+            target_aspect_ratio, res.aspect_ratio()))
+        # i = 0
+        # samples = []
+        # for res in ratio_sorted:
+        #     if i > 10:
+        #         break
+        #     samples.append(
+        #         f"{res} = {ratio_distance(target_aspect_ratio, res.aspect_ratio())}")
+        #     i += 1
+        # print(f"Ratio distance sorted: {samples}")
+        # Find all candidates with the same ratio distance (multiples could have the same aspect ratio/distance)
         closest_candidates = [ratio_sorted[0]]
-        ref_distance = euclidean_distance(
-            [ratio_sorted[0].aspect_ratio().numerator,
-             ratio_sorted[0].aspect_ratio().denominator],
-            [reference_ratio.numerator, reference_ratio.denominator]
-        )
-
+        best_candidates_ratio = ratio_sorted[0].aspect_ratio()
         for res in ratio_sorted[1:]:
-            distance = euclidean_distance(
-                [res.aspect_ratio().numerator, res.aspect_ratio().denominator],
-                [reference_ratio.numerator, reference_ratio.denominator]
-            )
-            if abs(distance - ref_distance) < 1e-9:  # Using approximate equality
+            if res.aspect_ratio() == best_candidates_ratio:
                 closest_candidates.append(res)
             else:
                 break
+        # print(f"Closest candidates: {ResolutionsList(closest_candidates)}")
 
-        # Return the resolution closest in size from the closest ratios
-        return ResolutionsList(closest_candidates).get_closest(target)
+        # Return the resolution closest in size from the closest ratio candidates
+        return ResolutionsList(closest_candidates).get_closest_equal_or_larger(target)
+
+    def __bool__(self):
+        return bool(self.resolutions)
+
+    def __str__(self):
+        return str([str(res) for res in self.resolutions])
 
 
 def generate_all_valid_resolutions(patch_len: int, min_len: int, max_size: int) -> ResolutionsList:
