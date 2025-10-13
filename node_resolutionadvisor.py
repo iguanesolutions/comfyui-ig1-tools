@@ -5,6 +5,8 @@ from .helpers import Resolution, HIRES_RATIO
 from .node_utilities import ResolutionParam
 from .flux import get_closest_valid_resolution as get_flux_closest_valid_resolution
 
+models = ["FLUX.1-dev"]
+
 
 class ResolutionAdvisor(io.ComfyNode):
     @classmethod
@@ -24,6 +26,12 @@ class ResolutionAdvisor(io.ComfyNode):
                     "resolution",
                     tooltip="The desired resolution of the image to be generated. Will be adjusted as reference to match patch length if necessary.",
                 ),
+                io.Combo.Input(
+                    "model",
+                    options=models,
+                    default=models[0],
+                    tooltip="The model you want to compute advises for. This will be used to get the patch length, min lengths and max size.",
+                )
             ],
             outputs=[
                 ResolutionParam.Output(
@@ -51,11 +59,14 @@ class ResolutionAdvisor(io.ComfyNode):
         )
 
     @classmethod
-    def execute(cls, resolution) -> io.NodeOutput:
+    def execute(cls, resolution, model) -> io.NodeOutput:
         # Compute the flux first pass generation resolution
         # and the adjusted (if necessary) reference resolution.
-        adjusted_ref_reso, generate_reso = get_flux_closest_valid_resolution(
-            resolution)
+        if model == "FLUX.1-dev":
+            adjusted_ref_reso, generate_reso = get_flux_closest_valid_resolution(
+                resolution)
+        else:
+            ValueError(f"Model f{model} has no internal configuration.")
         # Compute if a HiRes fix x2 second pass is needed to get to the reference resolution
         need_hires = False
         need_upscale = False
