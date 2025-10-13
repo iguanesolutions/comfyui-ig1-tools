@@ -47,7 +47,7 @@ class ResolutionPacker(io.ComfyNode):
         res = Resolution(width, height)
         return io.NodeOutput(
             res,
-            ui=ui.PreviewText(value=res.aspect_ratio().__str__()),
+            ui=ui.PreviewText(value=str(res.aspect_ratio())),
         )
 
 
@@ -62,7 +62,7 @@ class ResolutionProperties(io.ComfyNode):
             inputs=[
                 ResolutionParam.Input(
                     "resolution",
-                    tooltip="The packed resolution to extract properties from",
+                    tooltip="The resolution to extract properties from",
                 )
             ],
             outputs=[
@@ -79,7 +79,7 @@ class ResolutionProperties(io.ComfyNode):
                 io.Float.Output(
                     "megapixels",
                     display_name="MEGAPIXELS",
-                    tooltip="The resolution size in megapixels",
+                    tooltip="The resolution size in megapixels (rounded to 2 decimals)",
                 ),
                 RatioParam.Output(
                     "ratio",
