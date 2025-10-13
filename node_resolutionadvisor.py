@@ -16,10 +16,9 @@ class ResolutionAdvisor(io.ComfyNode):
             display_name="Resolution Advisor",
             category="IG1 Tools",
             description=f"""From a user input desired resolution, this node will compute and output:
-1. A (adjusted if necessary) reference resolution the closest possible from the input resolution but respecting the model patch length.
-2. A first generation pass, accounting for model's min len, max size and patch len, resolution for the first sampling based on the reference resolution.
-3. A boolean indicating if a second pass {HIRES_RATIO}x upscale (HiRes fix recommended) is necessary, aka if the generate resolution is lower than the reference resolution.
-4. A boolean indicating if a third pass (pure upscale) is necessary, aka if the the size post 2nd pass (doubling the resolution) is still under the reference resolution.
+1. A first generation pass resolution, accounting for model's min len, max size and patch len, with a ratio the closest possible to input resolution.
+2. A boolean indicating if a second pass {HIRES_RATIO}x upscale (HiRes fix recommended) is necessary, aka if the generate resolution is lower than the reference resolution.
+3. A boolean indicating if a third pass (pure upscale) is necessary, aka if the the size post 2nd pass (doubling the resolution) is still under the reference resolution.
 """,
             inputs=[
                 ResolutionParam.Input(
