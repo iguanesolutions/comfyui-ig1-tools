@@ -8,7 +8,7 @@ MIN_LEN = 320
 MAX_SIZE = 1024 * 1024  # max training size
 
 
-def compute_all_flux_valid_resolutions() -> ResolutionsList:
+def compute_all_valid_resolutions() -> ResolutionsList:
     valid_resolutions = []
 
     # Start with one less than the minimum to generate the first candidate below min_size
@@ -32,10 +32,10 @@ def compute_all_flux_valid_resolutions() -> ResolutionsList:
 
 
 # Precompute all valid resolutions
-all_valid_resolutions = compute_all_flux_valid_resolutions()
+all_valid_resolutions = compute_all_valid_resolutions()
 
 
-def get_flux_resolutions_by_ratio(ratio: AspectRatio) -> ResolutionsList:
+def get_resolutions_by_ratio(ratio: AspectRatio) -> ResolutionsList:
     valid_resolutions = []
     for res in all_valid_resolutions.resolutions:
         if res.aspect_ratio() == ratio:
@@ -43,7 +43,7 @@ def get_flux_resolutions_by_ratio(ratio: AspectRatio) -> ResolutionsList:
     return ResolutionsList(valid_resolutions)
 
 
-def get_flux_closest_valid_resolution(res: Resolution) -> Tuple[Resolution, Resolution]:
+def get_closest_valid_resolution(res: Resolution) -> Tuple[Resolution, Resolution]:
     """
     Returns the closest FLUX-compatible resolution and the adjusted reference.
     """
@@ -51,7 +51,7 @@ def get_flux_closest_valid_resolution(res: Resolution) -> Tuple[Resolution, Reso
     if res.valid(patch_len=PATCH_LEN, min_len=MIN_LEN, max_size=MAX_SIZE):
         return res, res
     # Try to find a valid resolution with the same aspect ratio
-    candidates = get_flux_resolutions_by_ratio(res.aspect_ratio())
+    candidates = get_resolutions_by_ratio(res.aspect_ratio())
     if candidates.resolutions:
         return res, candidates.get_closest_equal_or_larger(res)
     # Try with a slight adjustment of the resolution to fit step increments

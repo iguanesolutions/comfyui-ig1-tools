@@ -2,20 +2,20 @@
 from comfy_api.latest import io
 
 from .helpers import Resolution, HIRES_RATIO
-from .resolution import ResolutionParam
-from .flux import get_flux_closest_valid_resolution
+from .node_utilities import ResolutionParam
+from .flux import get_closest_valid_resolution as get_flux_closest_valid_resolution
 
 
-class FluxResolution(io.ComfyNode):
+class ResolutionAdvisor(io.ComfyNode):
     @classmethod
     def define_schema(cls) -> io.Schema:
         return io.Schema(
-            node_id="IG1FluxResolution",
-            display_name="Flux Resolution",
+            node_id="IG1ResolutionAdvisor",
+            display_name="Resolution Advisor",
             category="IG1 Tools",
-            description=f"""From a user input desired resolution, this node will compute:
-1. A (adjusted if necessary) reference resolution the closest possible from the input resolution but respecting the flux patch length (should be 32 but we found 16 works well and offers is more flexible for first pass resolutions).
-2. A first generation pass, flux compatible, resolution for the first sampling based on the reference resolution but also respecting minimal and maximal resolution.
+            description=f"""From a user input desired resolution, this node will compute and output:
+1. A (adjusted if necessary) reference resolution the closest possible from the input resolution but respecting the model patch length.
+2. A first generation pass, accounting for model's min len, max size and patch len, resolution for the first sampling based on the reference resolution.
 3. A boolean indicating if a second pass {HIRES_RATIO}x upscale (HiRes fix recommended) is necessary, aka if the generate resolution is lower than the reference resolution.
 4. A boolean indicating if a third pass (pure upscale) is necessary, aka if the the size post 2nd pass (doubling the resolution) is still under the reference resolution.
 """,
