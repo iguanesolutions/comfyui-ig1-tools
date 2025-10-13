@@ -29,12 +29,12 @@ class ResolutionAdvisor(io.ComfyNode):
                 ResolutionParam.Output(
                     "reference",
                     display_name="REFERENCE",
-                    tooltip="The adjusted (patch length) reference resolution. The Flux generate resolution will be based on it. Use it for final downscale."
+                    tooltip="The adjusted (with valid patch length) reference resolution. The generate resolution will be based on it. Use it for final downscale."
                 ),
                 ResolutionParam.Output(
                     "generate",
                     display_name="GENERATE",
-                    tooltip="The first pass Flux generation resolution respecting Flux min lenghts and max size."
+                    tooltip="The first pass generation resolution respecting model's patch len, min lenghts and max size."
 
                 ),
                 io.Boolean.Output(
