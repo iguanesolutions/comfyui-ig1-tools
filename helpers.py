@@ -64,26 +64,6 @@ class Resolution:
     def mega_pixels(self) -> float:
         return round(self.total_pixels() / 1000000, 2)
 
-    def __gt__(self, other: "Resolution"):
-        if not isinstance(other, Resolution):
-            return NotImplemented
-        return self.width > other.width and self.height > other.height
-
-    def __ge__(self, other: "Resolution"):
-        if not isinstance(other, Resolution):
-            return NotImplemented
-        return self.width >= other.width and self.height >= other.height
-
-    def __gt__(self, other: "Resolution"):
-        if not isinstance(other, Resolution):
-            return NotImplemented
-        return self.width < other.width and self.height < other.height
-
-    def __ge__(self, other: "Resolution"):
-        if not isinstance(other, Resolution):
-            return NotImplemented
-        return self.width >= other.width and self.height >= other.height
-
     def __str__(self) -> str:
         return f"{self.width}×{self.height} ({self.aspect_ratio()} @ {self.mega_pixels()}MP)"
 

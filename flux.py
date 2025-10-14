@@ -1,7 +1,7 @@
 from .helpers import Resolution, generate_all_valid_resolutions
 
 PATCH_LEN = 16
-MIN_LEN = 320
+MIN_LEN = 320  # is and must be dividable by PATCH_LEN
 # max training size, ~1MP pixels. Model can handle up to ~2M pixels which will reach with 2x HiRes fix.
 MAX_SIZE = 1024 * 1024
 

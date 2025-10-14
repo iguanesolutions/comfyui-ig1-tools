@@ -2,7 +2,7 @@
 from .helpers import Resolution, generate_all_valid_resolutions
 
 PATCH_LEN = 16  # VAE related
-MIN_LEN = 384
+MIN_LEN = 384  # is and must be dividable by PATCH_LEN
 # max training size, ~1,76MP pixels
 MAX_SIZE = 1328 * 1328
 
