@@ -144,8 +144,16 @@ class ImageSelector(io.ComfyNode):
             node_id="IG1ImageSelector",
             display_name="Image Selector",
             category="IG1 Tools",
-            description=f"""A lazy selector that will require only one image to be generated. Use it with the advisor to automate the activation of HiRes and final upscale within your workflow.""",
+            description=f"""A lazy selector that will require only one image to be generated depending on the use_upscaled value.
+Use it with the advisor to automate the activation (or not) of HiRes and final upscale within your workflow.""",
             inputs=[
+                io.Boolean.Input(
+                    "use_upscaled",
+                    tooltip="Select the upscaled image",
+                    lazy=False,
+                    default=False,
+                    force_input=True,
+                ),
                 io.Image.Input(
                     "original",
                     tooltip="The original image",
@@ -155,13 +163,6 @@ class ImageSelector(io.ComfyNode):
                     "upscaled",
                     tooltip="The upscaled image",
                     lazy=True,
-                ),
-                io.Boolean.Input(
-                    "use_upscaled",
-                    tooltip="Select the upscaled image",
-                    lazy=False,
-                    default=False,
-                    force_input=True,
                 )
             ],
             outputs=[
