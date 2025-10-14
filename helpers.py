@@ -91,12 +91,12 @@ class ResolutionsList:
                 [res.width, res.height],
                 [target.width, target.height]
             )
-            if distance == closest_distance:
-                if res > closest:
-                    closest = res
-            elif distance < closest_distance:
+            if distance < closest_distance:
                 closest = res
                 closest_distance = distance
+            elif distance == closest_distance and res.can_contains(closest):
+                # same distance but res is bigger
+                closest = res
         return closest
 
     def get_closest_equal_or_larger(self, target: Resolution) -> Resolution:
