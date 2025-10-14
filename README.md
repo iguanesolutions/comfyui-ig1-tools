@@ -1,6 +1,6 @@
-# ComfyUI Flux Tools
+# ComfyUI Tools
 
-This repository contains ComfyUI nodes to assist Flux generation workflow in ComfyUI.
+This repository contains ComfyUI nodes to assist generation in ComfyUI. It mostly direct toward hires image generation and automation.
 
 ## Installation
 
