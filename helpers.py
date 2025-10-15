@@ -104,7 +104,7 @@ class ResolutionsList:
             return Resolution(0, 0)
         # Find all resolutions larger than or equal to the target
         larger_or_equal_resolutions = ResolutionsList(
-            [res for res in self.resolutions if res >= target])
+            [res for res in self.resolutions if res.can_contains(target)])
         # We prefere a more distant but bigger or equal resolution than a closer but smaller one
         if larger_or_equal_resolutions.resolutions:
             return larger_or_equal_resolutions.get_closest(target)
