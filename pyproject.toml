@@ -1,6 +1,6 @@
 [project]
 name = "ig1-tools"
-description = "Generation tools, mostly about resolutions, high resolutions generation and automation. Also allow to report generation usage to BFL if licensed."
+description = "Generation tools, mostly about high resolutions generation and automation. Also allow to report Flux generation usage to BFL if licensed."
 version = "3.0.0"
 license-files = ["LICENSE"]
 dependencies = ["requests"]
