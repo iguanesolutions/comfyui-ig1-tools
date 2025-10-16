@@ -67,7 +67,4 @@ Check the example below !
 
 ![workflow_screenshot](res/flux_hires_generate.png)
 
-You can [download](res/Flux.1-Dev_HiRes.json) the example workflow to test an automatic Flux HiRes generation. You will need 2 additionals custom nodes to run it:
-
-* [ComfyUI Essentials](https://github.com/cubiq/ComfyUI_essentials)
-* [Crystools](https://github.com/crystian/ComfyUI-Crystools)
+You can [download](res/Flux.1-Dev_HiRes.json) the example workflow to test an automatic Flux HiRes generation. You will need an additional extension ([ComfyUI Essentials](https://github.com/cubiq/ComfyUI_essentials)) to help streamline the final downscale.
