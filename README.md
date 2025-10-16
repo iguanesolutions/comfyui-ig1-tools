@@ -1,6 +1,6 @@
-# ComfyUI Tools
+# ComfyUI IG1 Tools
 
-This repository contains ComfyUI nodes to assist generation in ComfyUI. It mostly direct toward hires image generation and automation.
+This repository contains ComfyUI nodes to assist generation in ComfyUI. It is mostly direct toward high resolution image generation and automation.
 
 ## Installation
 
@@ -13,43 +13,49 @@ This repository contains ComfyUI nodes to assist generation in ComfyUI. It mostl
 
 1. Open ComfyUI Manager.
 2. Click on "Install via Git URL".
-3. Enter the following URL: `https://github.com/iguanesolutions/comfyui-flux-tools.git`.
+3. Enter the following URL: `https://github.com/iguanesolutions/comfyui-ig1-tools.git`.
 
 ## Usage
 
 Once installed, you will find the following nodes under the `Flux Tools` category:
 
-* `Flux Resolution`
-* `Flux Licensing Usage Report`
+* `Resolution` - Allows to enter (or receive) a width and a height and package them as a resolution, allowing to pass a single parameter. Resolution parameters have an enhanced string representation that can be viewed with the ComfyUI `Preview Any` node.
+* `Resolution Properties` - Allows to unpack a resolution properties: width, height, rounded megapixels, and aspect ratio parameter.
+* `Aspect Ratio Properties` - Allows to unpack a aspect ratio parameter: nominator, denominator, raw value
+* `Image Selector` - An lazy image selector (require and so trigger generation of only one of the input image) to help automate workflows with output from the advisor.
+* `Resolution Advisor` - An helper to compute valid resolutions for various models from an input resolution. Currently supports QwenImage, FluxDev and SDXL. See below for more details.
+* `Qwen Image Natives Resolutions` - A list of native Qwen Image resolutions. Native means the model has been trained on these resolutions and so should have the best possible output quality and coherence.
+* `Flux Licensing Usage Report` - Allows to automatically report to Black Forest Lab images generated with a licensed Flux Dev model.
 
-### Flux Resolution
+### Resolution and Aspect Ratio parameters
 
-This node takes a desired resolution and computes the closest valid resolution for Flux generation, including whether a HiRes fix is needed and a final upscale is needed.
+![helpers_screenshots](res/helpers_nodes.png)
 
-Example:
+### Resolution Advisor
+
+This node takes a desired resolution and computes the closest valid resolution the selected model, including whether a HiRes fix is needed and a final upscale is needed to reach the input resolution from the computed generation resolution.
+
+Example with Flux Dev:
 1. Input resolution is `3844x2160`. The resolution is not valid because:
-    1. It does not respect the flux stepping
-    2. It is over the max size
-2. The first computation will be to compute a resolution respecting the stepping (we use 16 instead of 32 more information below). The closest valid resolution will be computed: `3844x2160` -> `3840x2160`. This resolution will be the "reference" resolution, used for further computation and can (should) also be used as the final downscale target resolution to keep the generated image ratio.
-3. The second computation will be the generate resolution: based on the reference resolution, we will compute a new resolution that respect the minimum and maximum size for the Flux model. Use it for the first pass generation (from scratch/noise). In our example the generate resolution will be `1280x720`.
-4. Because the reference resolution `3840x2160` is bigger than the generate resolution, the `hires_upscale` boolean will be set to true: it indicates that a second pass is needed to upscale the image to the reference resolution. We recommended to not perform a simple upscale but a 2x HiRes fix on this step.
-5. Because the HiRes fix will upscale (and add details to) the image to `2560x1440` (x2) and this resolution is still under the reference resolution, the `additional_upscale` boolean will be set to true: it indicates that a third pass is needed to upscale the image to the reference resolution. We recommended to perform a simple upscale on this step.
-6. By upscaling the hires image by x2 again we will optain a final image of `5120x2880` that is bigger than the reference resolution, at this step a downscale will be needed to get the final image to the reference resolution of `3840x2160`.
+    1. It does not respect the stepping (`3840x2160` would have, it is made on purpose for this example)
+    2. It is over the max size of Flux
+2. The first step will be to compute a resolution respecting the stepping (we use 16 instead of 32 more information below) and minimum length for width and height but also max size of the image (total pixels for the generated image). It will first search a ratio closest to the original ratio and then a resolution with the closest valid ratio closest to the input resolution (in our case, the biggest possible). In our example the generate resolution will be `1280x720`.
+4. Because the input resolution `3840x2160` is bigger than the `1280x720` generate resolution, the `hires_upscale` boolean will be set to true: it indicates that a second pass is needed to upscale the image to reach (or get closer) to the input resolution. We recommended to perform 2x HiRes fix on this step (instead of a simple upscale).
+5. Because the HiRes fix will upscale (and add details to) the image to `2560x1440` (x2) and because this resolution is still under the input resolution, the `additional_upscale` boolean will be set to true: it indicates that a third pass is needed to upscale the image to the reference resolution. We recommended to perform a simple upscale on this step.
+6. By upscaling the hires image by x2 again we will optain a final image of `5120x2880` that is finally bigger than the input resolution, at this step a downscale will be needed to get the final image.
+7. For the final downscale you have 2 choices:
+    * Downscale the image to the input image while stretching it in order to reach the `3844x2160` input resolution (it will be bearly visible).
+    * Downscale the image by respecting its generation proportion (16/9) to get a non stretched image of `3840x2160`, the closest possible of the input resolution.
 
 By using conditionnal nodes on your workflow you can acheive a fully automated workflow that:
 
 1. Take any desired width and height as input
-2. Compute the optimal generate resolution for Flux
-3. Perform if necessary a second HiRes pass
-4. Perform if necessary an additionnal upscale pass
-5. Downscale the image if needed
-6. Output the final image to the reference resolution (or even the user input size if it is okay for you to take the risk to stretch the image a little bit).
+2. Compute the optimal generate resolution for the model
+3. Perform **automatically** and *if necessary* a second HiRes pass
+4. Perform **automatically** and *if necessary* an additionnal upscale pass
+5. Downscale the image and adapt its ratio or not
 
 Check the example below !
-
-> [!NOTE]
-> Original stepping for Flux Dev is 32 (as indicated by the [API parameters](https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-[dev]#body-width)). But we use a 16 stepping, why ?
-> Let's take a 16/9 ratio: with a stepping of 32 and a 1440 max size, the biggest generate resolution would be 1024x576. With a 16 stepping, the biggest generate resolution goes up to 1280x720. During our tests, we noticed that the 16 stepping did not introduced any artifacts on the final image while providing more granularity for the generate resolution yielding better results thanks to bigger generate resolutions.
 
 ### Flux Licensing Usage Report
 
@@ -61,7 +67,7 @@ Check the example below !
 
 ![workflow_screenshot](res/flux_hires_generate.png)
 
-You can [download](res/flux_hires.json) the example workflow to test an automatic Flux HiRes generation. You will need 2 additionals custom nodes to run it:
+You can [download](res/Flux.1-Dev_HiRes.json) the example workflow to test an automatic Flux HiRes generation. You will need 2 additionals custom nodes to run it:
 
 * [ComfyUI Essentials](https://github.com/cubiq/ComfyUI_essentials)
 * [Crystools](https://github.com/crystian/ComfyUI-Crystools)
