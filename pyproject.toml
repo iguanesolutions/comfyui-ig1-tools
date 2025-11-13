@@ -2,13 +2,13 @@
 name = "ig1-tools"
 description = "Generation tools, mostly about high resolutions generation and automation. Also allow to report Flux generation usage to BFL if licensed."
 version = "3.0.0"
-license-files = ["LICENSE"]
+license = { text = "MIT License" }
 dependencies = ["requests"]
 
 [project.urls]
 Repository = "https://github.com/iguanesolutions/comfyui-ig1-tools"
 
 [tool.comfy]
-PublisherId = "iguanesolutions"
+PublisherId = "ig1"
 DisplayName = "IG1 Tools"
-Icon = ""
+Icon = "https://media.githubusercontent.com/media/iguanesolutions/comfyui-ig1-tools/refs/heads/main/res/logo.png"
