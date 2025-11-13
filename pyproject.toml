@@ -9,6 +9,6 @@ dependencies = ["requests"]
 Repository = "https://github.com/iguanesolutions/comfyui-ig1-tools"
 
 [tool.comfy]
-PublisherId = "ig1"
+PublisherId = "iguanesolutions"
 DisplayName = "IG1 Tools"
 Icon = "https://media.githubusercontent.com/media/iguanesolutions/comfyui-ig1-tools/refs/heads/main/res/logo.png"
