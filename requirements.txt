@@ -1,1 +1,5 @@
 requests
+aiohttp
+torch
+numpy>=1.25.0
+Pillow
