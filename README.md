@@ -26,6 +26,7 @@ Once installed, you will find the following nodes under the `IG1 Tools` category
 * `Resolution Advisor` - A helper to compute valid resolutions for various models from an input resolution. Currently supports QwenImage, FluxDev and SDXL. See below for more details.
 * `Qwen Image Natives Resolutions` - A list of Qwen Image native resolutions. Native means the model has been trained on these resolutions and so should have the best possible output quality and coherence with them.
 * `Flux Licensing Usage Report` - Allows to automatically report to Black Forest Lab images generated with a licensed Flux Dev model.
+* `Load input/output Image` - Allows to load an image from the input or output directories.
 
 ### Resolution and Aspect Ratio parameters
 
@@ -68,3 +69,25 @@ Check the example below !
 ![workflow_screenshot](res/flux_hires_generate.png)
 
 You can [download](res/Flux.1-Dev_HiRes.json) the example workflow to test an automatic Flux HiRes generation. You will need an additional extension ([ComfyUI Essentials](https://github.com/cubiq/ComfyUI_essentials)) to help streamline the final downscale.
+
+### Load input/output image
+
+This node allows you to load an image from the input or output directories.
+The refresh button will make a call to the `/ig1api/images` endpoint to refresh the images list.
+
+![load_image_screenshot](res/load_image_node.png)
+
+### API Server endpoints
+
+* `/ig1api/images`
+
+    **Method**: GET
+
+    **Description**: Get all input and output images names.
+
+    **Example**:
+
+    ```bash
+    curl -s -X GET "http://127.0.0.1:8188/ig1api/images"
+    ["input1.png", "input2.png", "output1.png [output]", "output2.png [output]"]
+    ```
