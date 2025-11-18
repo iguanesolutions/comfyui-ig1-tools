@@ -1,9 +1,9 @@
 {
-    "name": "ComfyUI-FluxTools",
+    "name": "ComfyUI-IG1-Tools",
     "build": {
         "dockerfile": "Dockerfile"
     },
-    "workspaceMount": "source=${localWorkspaceFolder},target=/ComfyUI/custom_nodes/comfyui-flux-tools,type=bind",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/ComfyUI/custom_nodes/comfyui-ig1-tools,type=bind",
     "workspaceFolder": "/ComfyUI",
-    "updateContentCommand": "pip install -r /ComfyUI/custom_nodes/comfyui-flux-tools/requirements.txt"
+    "updateContentCommand": "pip install -r /ComfyUI/custom_nodes/comfyui-ig1-tools/requirements.txt"
 }
