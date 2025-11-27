@@ -3,11 +3,12 @@ from comfy_api.latest import io
 
 from .helpers import Resolution, HIRES_RATIO
 from .node_utilities import ResolutionParam
+from .flux2 import get_best_valid_resolution as get_flux2_best_valid_resolution
 from .flux import get_best_valid_resolution as get_flux_best_valid_resolution
 from .qwenimage import get_best_valid_resolution as get_qwenimage_best_valid_resolution
 from .sdxl import get_best_valid_resolution as get_sdxl_best_valid_resolution
 
-models = ["Qwen-Image", "FLUX.1-dev", "SDXL"]
+models = ["FLUX.2-dev", "Qwen-Image", "FLUX.1-dev", "SDXL"]
 
 
 class ResolutionAdvisor(io.ComfyNode):
@@ -58,10 +59,12 @@ class ResolutionAdvisor(io.ComfyNode):
     def execute(cls, resolution, model) -> io.NodeOutput:
         # Compute the flux first pass generation resolution
         # and the adjusted (if necessary) reference resolution.
-        if model == "FLUX.1-dev":
-            generate_reso = get_flux_best_valid_resolution(resolution)
+        if model == "FLUX.2-dev":
+            generate_reso = get_flux2_best_valid_resolution(resolution)
         elif model == "Qwen-Image":
             generate_reso = get_qwenimage_best_valid_resolution(resolution)
+        elif model == "FLUX.1-dev":
+            generate_reso = get_flux_best_valid_resolution(resolution)
         elif model == "SDXL":
             generate_reso = get_sdxl_best_valid_resolution(resolution)
         else:

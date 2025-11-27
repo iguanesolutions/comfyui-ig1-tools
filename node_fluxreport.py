@@ -2,7 +2,8 @@
 from comfy_api.latest import io
 import requests
 
-models = ["flux-1-dev", "flux-1-kontext-dev", "flux-tools", "flux-1-krea-dev"]
+models = ["flux-2-dev", "flux-1-dev",
+          "flux-1-kontext-dev", "flux-tools", "flux-1-krea-dev"]
 
 
 class FluxReport(io.ComfyNode):
