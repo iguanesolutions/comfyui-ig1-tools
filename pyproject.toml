@@ -1,7 +1,7 @@
 [project]
 name = "ig1-tools"
 description = "Tools to simplify automation of high resolution generation workflows (resolution, aspect ratio, model resolution advisor, hires, upscale). Also allow to report Flux generation usage to BFL if licensed."
-version = "3.1.0"
+version = "3.2.0"
 license = { text = "MIT License" }
 dependencies = ["requests"]
 
